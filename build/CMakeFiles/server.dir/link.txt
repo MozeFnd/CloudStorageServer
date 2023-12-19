@@ -1,1 +1,0 @@
-/usr/bin/g++ -g CMakeFiles/server.dir/src/main.cpp.o -o server  -Wl,-rpath,/home/xun/cloud_server_cpp/build libcommunicator.so libkvstore.so liblogger.so libjsontool.so /home/xun/leveldb/build/libleveldb.a 

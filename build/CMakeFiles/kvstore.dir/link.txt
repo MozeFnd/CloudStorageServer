@@ -1,1 +1,0 @@
-/usr/bin/g++ -fPIC -g -shared -Wl,-soname,libkvstore.so -o libkvstore.so CMakeFiles/kvstore.dir/src/kvstore.cpp.o  /home/xun/leveldb/build/libleveldb.a 
