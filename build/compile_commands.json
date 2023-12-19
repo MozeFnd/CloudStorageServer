@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/home/xun/cloud_server_cpp/build",
+  "command": "/usr/bin/g++ -Dcommunicator_EXPORTS -I/home/xun/cloud_server_cpp/include -I/home/xun/leveldb/include -I/home/xun/spdlog/include -g -fPIC -o CMakeFiles/communicator.dir/src/communicator.cpp.o -c /home/xun/cloud_server_cpp/src/communicator.cpp",
+  "file": "/home/xun/cloud_server_cpp/src/communicator.cpp"
+},
+{
+  "directory": "/home/xun/cloud_server_cpp/build",
+  "command": "/usr/bin/g++ -Dkvstore_EXPORTS -I/home/xun/cloud_server_cpp/include -I/home/xun/leveldb/include -I/home/xun/spdlog/include -g -fPIC -o CMakeFiles/kvstore.dir/src/kvstore.cpp.o -c /home/xun/cloud_server_cpp/src/kvstore.cpp",
+  "file": "/home/xun/cloud_server_cpp/src/kvstore.cpp"
+},
+{
+  "directory": "/home/xun/cloud_server_cpp/build",
+  "command": "/usr/bin/g++ -Dlogger_EXPORTS -I/home/xun/cloud_server_cpp/include -I/home/xun/leveldb/include -I/home/xun/spdlog/include -g -fPIC -o CMakeFiles/logger.dir/src/logger.cpp.o -c /home/xun/cloud_server_cpp/src/logger.cpp",
+  "file": "/home/xun/cloud_server_cpp/src/logger.cpp"
+},
+{
+  "directory": "/home/xun/cloud_server_cpp/build",
+  "command": "/usr/bin/g++ -Djsontool_EXPORTS -I/home/xun/cloud_server_cpp/include -I/home/xun/leveldb/include -I/home/xun/spdlog/include -g -fPIC -o CMakeFiles/jsontool.dir/src/jsontool.cpp.o -c /home/xun/cloud_server_cpp/src/jsontool.cpp",
+  "file": "/home/xun/cloud_server_cpp/src/jsontool.cpp"
+},
+{
+  "directory": "/home/xun/cloud_server_cpp/build",
+  "command": "/usr/bin/g++  -I/home/xun/cloud_server_cpp/include -I/home/xun/leveldb/include -I/home/xun/spdlog/include -g -o CMakeFiles/server.dir/src/main.cpp.o -c /home/xun/cloud_server_cpp/src/main.cpp",
+  "file": "/home/xun/cloud_server_cpp/src/main.cpp"
+}
+]

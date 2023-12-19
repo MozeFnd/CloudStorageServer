@@ -1,0 +1,77 @@
+[2023-12-17 19:26:00.960] [file_logger] [info] sys start
+[2023-12-17 19:26:49.233] [file_logger] [info] sys start1
+[2023-12-17 19:30:27.110] [file_logger] [info] sys start1
+[2023-12-17 19:30:27.110] [file_logger] [debug] sys start2
+[2023-12-17 20:47:38.410] [file_logger] [info] requestType:1
+[2023-12-17 20:47:38.410] [file_logger] [info] client login in: uname:%s   pwd:%s
+[2023-12-17 20:50:00.488] [file_logger] [info] requestType: 1
+[2023-12-17 20:50:00.488] [file_logger] [info] client login in: uname:xun   pwd:999
+[2023-12-17 20:50:36.418] [file_logger] [info] requestType: 1
+[2023-12-17 20:50:36.418] [file_logger] [info] client login in: uname:xun   pwd:999
+[2023-12-17 21:21:44.304] [file_logger] [info] requestType: 1
+[2023-12-17 21:21:44.304] [file_logger] [info] client login in: uname:xun   pwd:999
+[2023-12-17 21:24:08.583] [file_logger] [info] requestType: 0
+[2023-12-17 21:24:08.583] [file_logger] [error] unknown request type: 0
+[2023-12-17 21:26:17.858] [file_logger] [info] requestType: 2
+[2023-12-17 21:27:41.106] [file_logger] [info] requestType: 0
+[2023-12-17 21:27:41.106] [file_logger] [error] unknown request type: 0
+[2023-12-17 22:09:10.650] [file_logger] [info] requestType: 2
+[2023-12-17 22:09:10.651] [file_logger] [info] send id from 11 to 20
+[2023-12-17 22:10:37.986] [file_logger] [info] requestType: 2
+[2023-12-17 22:10:37.986] [file_logger] [info] send id from 21 to 30
+[2023-12-17 22:11:31.215] [file_logger] [info] requestType: 0
+[2023-12-17 22:11:31.215] [file_logger] [error] unknown request type: 0
+[2023-12-17 22:13:14.811] [file_logger] [info] requestType: 0
+[2023-12-17 22:13:14.811] [file_logger] [error] unknown request type: 0
+[2023-12-17 22:21:52.644] [file_logger] [info] requestType: 2
+[2023-12-17 22:21:52.644] [file_logger] [info] send id from 31 to 40
+[2023-12-17 22:25:01.478] [file_logger] [info] requestType: 2
+[2023-12-17 22:25:01.478] [file_logger] [info] send id from 41 to 50
+[2023-12-17 22:40:42.178] [file_logger] [info] requestType: 2
+[2023-12-17 22:40:42.178] [file_logger] [info] send id from 51 to 60
+[2023-12-17 22:41:48.929] [file_logger] [info] requestType: 2
+[2023-12-17 22:41:48.929] [file_logger] [info] send id from 61 to 70
+[2023-12-17 22:42:03.442] [file_logger] [info] requestType: 0
+[2023-12-17 22:42:03.442] [file_logger] [error] unknown request type: 0
+[2023-12-17 23:18:16.819] [file_logger] [info] requestType: 2
+[2023-12-17 23:18:16.819] [file_logger] [info] send id from 71 to 80
+[2023-12-17 23:18:51.469] [file_logger] [info] requestType: 0
+[2023-12-17 23:18:51.469] [file_logger] [error] unknown request type: 0
+[2023-12-17 23:18:54.328] [file_logger] [info] requestType: 0
+[2023-12-17 23:18:54.328] [file_logger] [error] unknown request type: 0
+[2023-12-17 23:19:08.206] [file_logger] [info] requestType: 0
+[2023-12-17 23:19:08.206] [file_logger] [error] unknown request type: 0
+[2023-12-17 23:21:42.273] [file_logger] [info] requestType: 2
+[2023-12-17 23:21:42.273] [file_logger] [info] send id from 81 to 90
+[2023-12-18 00:01:19.753] [file_logger] [info] requestType: 2
+[2023-12-18 00:01:19.753] [file_logger] [info] send id from 91 to 100
+[2023-12-18 00:02:44.895] [file_logger] [info] requestType: 2
+[2023-12-18 00:02:44.896] [file_logger] [info] send id from 101 to 110
+[2023-12-18 00:22:30.545] [file_logger] [info] requestType: 2
+[2023-12-18 00:22:30.545] [file_logger] [info] send id from 111 to 120
+[2023-12-18 00:23:02.743] [file_logger] [info] requestType: 0
+[2023-12-18 00:23:02.743] [file_logger] [error] unknown request type: 0
+[2023-12-18 00:23:05.982] [file_logger] [info] requestType: 0
+[2023-12-18 00:23:05.982] [file_logger] [error] unknown request type: 0
+[2023-12-18 00:23:39.389] [file_logger] [info] requestType: 2
+[2023-12-18 00:23:39.389] [file_logger] [info] send id from 121 to 130
+[2023-12-18 12:56:43.086] [file_logger] [info] requestType: 0
+[2023-12-18 12:56:43.086] [file_logger] [error] unknown request type: 0
+[2023-12-18 12:58:31.814] [file_logger] [info] requestType: 1
+[2023-12-18 12:58:31.814] [file_logger] [info] client login in: uname:xun   pwd:999
+[2023-12-18 13:05:50.311] [file_logger] [info] requestType: 1
+[2023-12-18 13:05:50.312] [file_logger] [info] client login in: uname:xun   pwd:999
+[2023-12-18 13:06:30.385] [file_logger] [info] requestType: 1
+[2023-12-18 13:06:30.385] [file_logger] [info] client login in: uname:xun   pwd:999
+[2023-12-18 13:09:57.371] [file_logger] [info] requestType: 1
+[2023-12-18 13:09:57.371] [file_logger] [info] client login in: uname:xun   pwd:999
+[2023-12-18 13:09:57.406] [file_logger] [info] requestType: 2
+[2023-12-18 13:09:57.407] [file_logger] [info] send id from 131 to 140
+[2023-12-19 19:06:02.177] [file_logger] [info] requestType: 0
+[2023-12-19 19:06:02.177] [file_logger] [error] unknown request type: 0
+[2023-12-19 19:22:13.513] [file_logger] [info] requestType: 0
+[2023-12-19 19:22:13.513] [file_logger] [error] unknown request type: 0
+[2023-12-19 19:24:02.892] [file_logger] [info] requestType: 0
+[2023-12-19 19:24:02.892] [file_logger] [error] unknown request type: 0
+[2023-12-19 19:26:55.683] [file_logger] [info] requestType: 4
+[2023-12-19 19:26:55.683] [file_logger] [error] unknown request type: 4

@@ -1,0 +1,1 @@
+/usr/bin/g++ -fPIC -g -shared -Wl,-soname,libcommunicator.so -o libcommunicator.so CMakeFiles/communicator.dir/src/communicator.cpp.o 
