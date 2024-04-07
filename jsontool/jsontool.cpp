@@ -71,7 +71,7 @@ std::string Json::toString(){
 
 std::shared_ptr<Json> Json::fromPath(std::string path){
     std::shared_ptr<Json> ret = std::make_shared<Json>();
-    ret->addProperty("type", "direcory");
+    ret->addProperty("type", "directory");
     std::filesystem::path p = path;
     auto str = p.filename().string();
     ret->addProperty("dirname", str);
@@ -120,7 +120,7 @@ std::shared_ptr<Json> Json::fromJsonString(std::string str) {
             while (left_curly < right_square) {
                 auto right_curly = right_brackts[left_curly];
                 auto tmp_child = fromJsonString(str.substr(left_curly, right_curly - left_curly + 1));
-                js->addChild("contents", tmp_child);
+                js->addChild(matches[1].str(), tmp_child);
                 left_curly = right_curly + 2;
             }
             break;

@@ -7,9 +7,9 @@
 #include <thread>
 #include <string>
 #include <memory>
-#include "kvstore.h"
+#include "kvstore/kvstore.h"
 #include "spdlog/spdlog.h"
-#include "jsontool.h"
+#include "jsontool/jsontool.h"
 
 class Communicator {
 public:
@@ -18,6 +18,7 @@ public:
         AcquireID = 2,
         GetAllDir = 3,
         AddDir = 4,
+        SyncFile = 5,
     };
 private:
     int serverSocket;
@@ -36,6 +37,9 @@ public:
     void handleAcquireID(int clientSocket);
     void handleAddNewDirectory(int clientSocket);
     void handleGetAllDir(int clientSocket);
+    void handleSyncFile(int clientSocket);
+    void recordDirectoryInfo(std::string id, std::shared_ptr<Json> js);
+    std::unordered_map<std::string, std::shared_ptr<Json>> readAllDirectoryInfo();
 };
 
 
