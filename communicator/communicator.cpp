@@ -210,6 +210,10 @@ void Communicator::handleSyncFile(int clientSocket){
     free(buffer);
 }
 
+void handleGetRemoteTree(int clientSocket) {
+    
+}
+
 void handleGetAllDir(int clientSocket){
     Json js;
     js.addProperty("dir_num", "10");

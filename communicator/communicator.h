@@ -19,6 +19,7 @@ public:
         GetAllDir = 3,
         AddDir = 4,
         SyncFile = 5,
+        GetRemoteTree = 6,
     };
 private:
     int serverSocket;
