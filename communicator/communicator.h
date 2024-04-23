@@ -10,6 +10,7 @@
 #include "kvstore/kvstore.h"
 #include "spdlog/spdlog.h"
 #include "jsontool/jsontool.h"
+#include "common/tree.h"
 
 class Communicator {
 public:
@@ -39,6 +40,7 @@ public:
     void handleAddNewDirectory(int clientSocket);
     void handleGetAllDir(int clientSocket);
     void handleSyncFile(int clientSocket);
+    void handleGetRemoteTree(int clientSocket);
     void recordDirectoryInfo(std::string id, std::shared_ptr<Json> js);
     std::unordered_map<std::string, std::shared_ptr<Json>> readAllDirectoryInfo();
 };

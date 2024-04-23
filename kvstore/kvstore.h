@@ -2,6 +2,7 @@
 #define KVSTORE_H
 
 #include <string>
+#include <vector>
 #include "leveldb/cache.h"
 #include "leveldb/db.h"
 #include "common/util.h"
@@ -12,6 +13,7 @@ class KVStore
 public:
     leveldb::DB* db;
     KVStore();
+    ~KVStore();
     void store(std::string key, std::string value);
     int append(std::string key, std::string value){
         std::string old = read(key);
@@ -31,7 +33,36 @@ public:
         return splitStr(str, ',');
     }
     void remove(std::string key);
-    ~KVStore();
+
+    // 取走一个空闲id
+    uint32_t fetch_new_id() {
+        auto key = "all_used_id";
+        auto all_used_id_str = read(key);
+        uint32_t new_id;
+        if (all_used_id_str.size() == 0) {
+            new_id = 1;
+        } else {
+            std::vector<std::string> all_used_id = splitStr(all_used_id_str, ',');
+            uint32_t cur_max = std::stoul(all_used_id[all_used_id.size() - 1]);
+            new_id = cur_max + 1;
+        }
+        all_used_id_str = all_used_id_str + "," + std::to_string(new_id);
+        return new_id;
+    }
+
+    // 得到序列化成string的tree结构
+    std::string read_tree_serialized(uint32_t id) {
+        auto key = "tree_" + std::to_string(id);
+        auto val = read(key);
+        return val;
+    }
+
+    // 将序列化成string的tree结构持久化
+    void write_tree_serialiezed(uint32_t id, std::string serialiezed) {
+        auto key = "tree_" + std::to_string(id);
+        store(key, serialiezed);
+    }
+
 private:
 };
 

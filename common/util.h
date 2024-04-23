@@ -2,6 +2,27 @@
 #define UTIL_H
 #include <string>
 #include <vector>
+#include <codecvt>
+#include <locale>
+
+struct FILETIME {
+    uint32_t dwLowDateTime;
+    uint32_t dwHighDateTime;
+};
+
+inline std::wstring str2wstr(std::string str){
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    std::wstring wstr = converter.from_bytes(str);
+    return wstr;
+}
+
+inline std::string wstr2str(const std::wstring wstr)
+{
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+    std::string utf8String = conv.to_bytes(wstr);
+    return utf8String;
+}
+
 
 inline std::vector<std::string> splitStr(std::string str, char delimiter) {
     std::vector<std::string> arr;
@@ -25,10 +46,35 @@ inline std::string mergeArr(std::vector<std::string> arr, char delimiter) {
         return "";
     }
     std::string ret = arr[0];
-    for (int i = 1;i < arr.size();i++) {
+    for (size_t i = 1;i < arr.size();i++) {
         ret += delimiter + arr[i];
     }
     return ret;
+}
+
+inline FILETIME MicrosecondsToFileTime(uint64_t microseconds) {
+    uint64_t tmp;
+    tmp = (microseconds + 11644473600ULL * 1000000ULL) * 10;  // Convert microseconds to 100-nanosecond intervals and adjust for the FILETIME epoch
+    FILETIME filetime;
+    filetime.dwLowDateTime = tmp & 0xFFFFFFFF;
+    filetime.dwHighDateTime = static_cast<uint32_t>(tmp >> 32);
+    return filetime;
+}
+
+inline uint64_t FileTimeToMicroseconds(const FILETIME& filetime) {
+    uint64_t tmp;
+    tmp = filetime.dwLowDateTime;
+    tmp |= (static_cast<uint64_t>(filetime.dwHighDateTime) << 32);
+    return tmp / 10 - 11644473600000000ULL;  // Convert 100-nanosecond intervals to microseconds and adjust for the Unix epoch
+}
+
+inline uint64_t max_filetime(FILETIME t1, FILETIME t2) {
+    uint64_t stamp1 = FileTimeToMicroseconds(t1);
+    uint64_t stamp2 = FileTimeToMicroseconds(t2);
+    if (stamp1 < stamp2) {
+        return stamp2;
+    }
+    return stamp1;
 }
 
 #endif // UTIL_H

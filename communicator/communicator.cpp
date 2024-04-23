@@ -56,6 +56,8 @@ void Communicator::handleRequests(int socket_fd) {
         handleSyncFile(clientSocket);
     } else if (requestType == GetAllDir) {
 
+    } else if (requestType == GetRemoteTree) {
+        handleGetRemoteTree(clientSocket);
     } else {
         logger->error("unknown request type: {}", requestType);
     }
@@ -79,6 +81,14 @@ void blockRead(int clientSocket, char* buffer, int n) {
     return;
 }
 
+void blockWrite(int clientSocket, char* buffer, int n) {
+    int acc = 0;
+    while (acc < n) {
+        acc += send(clientSocket, buffer + acc, n - acc, 0);
+    }
+    return;
+}
+
 std::string receiveStringWithLen(int clientSocket) {
     int buffer_size = 1000;
     char* buffer = (char*)malloc(buffer_size);
@@ -89,7 +99,7 @@ std::string receiveStringWithLen(int clientSocket) {
     recv(clientSocket, buffer, len, 0);
     buffer[len] = '\0';
     std::string str(buffer);
-    delete buffer;
+    free(buffer);
     return str;
 }
 
@@ -100,22 +110,14 @@ void Communicator::handleLogin(int clientSocket) {
 }
 
 void Communicator::handleAcquireID(int clientSocket) {
-    int buffer_size = 1000;
+    int buffer_size = 10;
     char* buffer = (char*)malloc(buffer_size);
-    std::string nextID = kvstore->read("nextVacantID");
-    if (nextID.empty()) {
-        nextID = "1";
-    }
-    uint32_t startID = std::stoul(nextID);
-    int batchSize = 10;
-    *buffer = (uint8_t)batchSize;
-    for (int i = 0;i < batchSize;i++) {
-        *(uint32_t*)(buffer + 1 + i * 4) = i + startID;
-    }
-    kvstore->store("nextVacantID", std::to_string(batchSize + startID));
-    logger->info("send id from {} to {}", startID, startID + batchSize - 1);
-    send(clientSocket, buffer, 1 + batchSize * 4, 0);
-    delete buffer;
+    
+    uint32_t nextID = kvstore->fetch_new_id();
+    logger->info("send id {}", nextID);
+    *(uint32_t*)buffer = nextID;
+    blockWrite(clientSocket, buffer, 4);
+    free(buffer);
 }
 
 void Communicator::handleAddNewDirectory(int clientSocket) {
@@ -130,28 +132,42 @@ void Communicator::handleAddNewDirectory(int clientSocket) {
     auto js = Json::fromJsonString(jsonStr);
     auto dev_name = js->getProperty("device");
     auto id = js->getProperty("id");
-    auto dir_name = js->getProperty("name");
-    auto archJs = js->getChildren("arch")[0];
+    auto serialized = js->getProperty("serialized");
     
     std::string storage_path = "../storage/" + id;
     std::filesystem::create_directory(storage_path);
 
-    std::function<void(std::shared_ptr<Json>, std::string)> mkdir;
-    mkdir = [&mkdir](std::shared_ptr<Json> cur_js, std::string parentPath){
-        if ("directory" == cur_js->getProperty("type")) {
-            auto name = cur_js->getProperty("name");
+    std::shared_ptr<Node> root = Node::fromSerializedStr(serialized);
+    
+    // old version
+    // std::function<void(std::shared_ptr<Json>, std::string)> mkdir;
+    // mkdir = [&mkdir](std::shared_ptr<Json> cur_js, std::string parentPath){
+    //     if ("directory" == cur_js->getProperty("type")) {
+    //         auto name = cur_js->getProperty("name");
+    //         auto to_create = parentPath + "/" + name;
+    //         std::filesystem::create_directory(to_create);
+    //         for (auto child : cur_js->getChildren("contents")) {
+    //             mkdir(child, to_create);
+    //         }
+    //     }
+    // };
+
+    std::function<void(std::shared_ptr<Node>, std::string)> mkdir;
+    mkdir = [&mkdir](std::shared_ptr<Node> cur_node, std::string parentPath){
+        if (DIRECTORY == cur_node->file_type) {
+            auto name = wstr2str(cur_node->name);
             auto to_create = parentPath + "/" + name;
-            std::filesystem::create_directory(to_create);
-            for (auto child : cur_js->getChildren("contents")) {
+            std::filesystem::create_directories(to_create);
+            for (auto child : cur_node->children) {
                 mkdir(child, to_create);
             }
         }
     };
 
-    mkdir(archJs, storage_path);
-    recordDirectoryInfo(id, archJs);
+    mkdir(root, storage_path);
+    // recordDirectoryInfo(id, archJs);
 
-    logger->info("device {} add new directory to track, id: {}, name: {}", dev_name, id, dir_name);
+    // logger->info("device {} add new directory to track, id: {}, name: {}", dev_name, id, dir_name);
     free(buffer);
 }
 
@@ -210,8 +226,23 @@ void Communicator::handleSyncFile(int clientSocket){
     free(buffer);
 }
 
-void handleGetRemoteTree(int clientSocket) {
-    
+void Communicator::handleGetRemoteTree(int clientSocket) {
+    // receive and lookup
+    int buffer_size = 10;
+    char* buffer = (char*)malloc(buffer_size);
+    blockRead(clientSocket, buffer, 4);
+    uint32_t root_id = *(uint32_t*)buffer;
+    std::string serialized = kvstore->read_tree_serialized(root_id);
+    free(buffer);
+
+    // send
+    buffer_size = serialized.size();
+    buffer = (char*)malloc(buffer_size);
+    memset(buffer, 0, buffer_size);
+    const char* tmp = serialized.c_str();
+    memcpy(buffer, tmp, buffer_size);
+    blockWrite(clientSocket, buffer, buffer_size);
+    free(buffer);
 }
 
 void handleGetAllDir(int clientSocket){
@@ -226,6 +257,7 @@ void Communicator::recordDirectoryInfo(std::string id, std::shared_ptr<Json> js)
 }
 
 std::unordered_map<std::string, std::shared_ptr<Json>> Communicator::readAllDirectoryInfo(){
+    
     auto allDirIds = Json::fromJsonString(kvstore->read("all_dir_ids"));
     auto ids = kvstore->readAsArray("all_dir_ids");
     std::unordered_map<std::string, std::shared_ptr<Json>> ret;

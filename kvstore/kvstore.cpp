@@ -7,7 +7,7 @@ KVStore::KVStore() {
 }
 
 std::string KVStore::read(std::string key){
-    std::string value;
+    std::string value = "";
     leveldb::Status s = db->Get(leveldb::ReadOptions(), key, &value);
     if (!s.ok()) {
 

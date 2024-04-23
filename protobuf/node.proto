@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package tree;
+
+message Node {
+    bool is_root = 1;
+    uint32 file_type = 2;
+    uint32 id = 3;
+
+    repeated Node children = 4;
+    
+    string abs_path = 5;
+    string relative_path = 6;
+    string name = 7;
+
+    uint64 last_modified_tmstmp = 8;
+    uint64 max_last_modified_tmstmp = 9;
+}
