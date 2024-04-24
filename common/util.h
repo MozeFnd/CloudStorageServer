@@ -4,23 +4,58 @@
 #include <vector>
 #include <codecvt>
 #include <locale>
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+
+#define DEBUG_MOD
+
+union WCharUnion {
+    wchar_t wc;  // 宽字符
+#ifdef __linux__
+    struct {
+        uint8_t byte1;  // 第1个字节
+        uint8_t byte2;  // 第2个字节
+        uint8_t byte3;  // 第3个字节
+        uint8_t byte4;  // 第4个字节
+    } bytes;
+#else
+    struct {
+        uint8_t byte1;  // 第1个字节
+        uint8_t byte2;  // 第2个字节
+    } bytes;
+#endif
+
+};
 
 struct FILETIME {
     uint32_t dwLowDateTime;
     uint32_t dwHighDateTime;
 };
 
+// inline std::wstring str2wstr(std::string str){
+//     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+//     std::wstring wstr = converter.from_bytes(str);
+//     return wstr;
+// }
+
+// inline std::string wstr2str(const std::wstring wstr)
+// {
+//     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
+//     std::string utf8String = conv.to_bytes(wstr);
+//     return utf8String;
+// }
+
 inline std::wstring str2wstr(std::string str){
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::wstring wstr = converter.from_bytes(str);
-    return wstr;
+    using convert_typeX = std::codecvt_utf8<wchar_t>;
+    std::wstring_convert<convert_typeX, wchar_t> converterX;
+    return converterX.from_bytes(str);
 }
 
 inline std::string wstr2str(const std::wstring wstr)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
-    std::string utf8String = conv.to_bytes(wstr);
-    return utf8String;
+    using convert_typeX = std::codecvt_utf8<wchar_t>;
+    std::wstring_convert<convert_typeX, wchar_t> converterX;
+    return converterX.to_bytes(wstr);
 }
 
 
@@ -75,6 +110,14 @@ inline uint64_t max_filetime(FILETIME t1, FILETIME t2) {
         return stamp2;
     }
     return stamp1;
+}
+
+template <typename... Args>
+inline void LOG_INFO(const std::string& text, Args &&...args) {
+    static std::shared_ptr<spdlog::logger> logger = spdlog::basic_logger_mt("file_logger", "logfile.txt");
+    logger->set_level(spdlog::level::debug);
+    logger->info(text, std::forward<Args>(args)...);
+    logger->flush();
 }
 
 #endif // UTIL_H

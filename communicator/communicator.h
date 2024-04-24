@@ -31,7 +31,7 @@ private:
     std::shared_ptr<KVStore> kvstore;
     std::shared_ptr<spdlog::logger> logger;
 public:
-    Communicator(std::shared_ptr<spdlog::logger> logger, std::shared_ptr<KVStore> kvstore);
+    Communicator(std::shared_ptr<KVStore> kvstore);
     ~Communicator();
     void loop();
     void handleRequests(int socket_fd);

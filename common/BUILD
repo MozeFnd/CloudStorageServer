@@ -1,6 +1,7 @@
 cc_library(
     name = "util",
     hdrs = ["util.h"],
+    deps = ["@spdlog_repo//:spdlog_lib"],
     visibility = ["//visibility:public"]
 )
 

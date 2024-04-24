@@ -6,11 +6,15 @@ std::shared_ptr<Node> Node::fromPbNode(tree::Node* pb_node) {
     node->is_root = pb_node->is_root();
     node->file_type = pb_node->file_type();
     node->id = pb_node->id();
-
+#ifdef __linux__
+    node->abs_path = pb_node->abs_path();
+    node->relative_path = pb_node->relative_path();
+    node->name = pb_node->name();
+#else
     node->abs_path = str2wstr(pb_node->abs_path());
     node->relative_path = str2wstr(pb_node->relative_path());
     node->name = str2wstr(pb_node->name());
-
+#endif
     node->last_modified = MicrosecondsToFileTime(pb_node->last_modified_tmstmp());
     node->max_last_modified = MicrosecondsToFileTime(pb_node->max_last_modified_tmstmp());
 
@@ -26,9 +30,15 @@ void Node::toPbNode(tree::Node* pb_node) {
     pb_node->set_is_root(is_root);
     pb_node->set_file_type(file_type);
     pb_node->set_id(id);
+#ifdef __linux__
+    pb_node->set_abs_path(abs_path);
+    pb_node->set_relative_path(relative_path);
+    pb_node->set_name(name);
+#else
     pb_node->set_abs_path(wstr2str(abs_path));
     pb_node->set_relative_path(wstr2str(relative_path));
     pb_node->set_name(wstr2str(name));
+#endif
     pb_node->set_last_modified_tmstmp(FileTimeToMicroseconds(last_modified));
     pb_node->set_max_last_modified_tmstmp(FileTimeToMicroseconds(max_last_modified));
 
@@ -38,7 +48,7 @@ void Node::toPbNode(tree::Node* pb_node) {
     }
 }
 
-std::string Node::serialze() {
+std::string Node::serialize() {
     tree::Node* pb_node = new tree::Node();
     toPbNode(pb_node);
     std::string ret = pb_node->SerializeAsString();
@@ -49,6 +59,7 @@ std::string Node::serialze() {
 std::shared_ptr<Node> Node::fromSerializedStr(const std::string& serialezed) {
     auto pb_node = new tree::Node();
     pb_node->ParseFromString(serialezed);
+    LOG_INFO("pb_node->name(): "+ pb_node->name());
     auto ret = fromPbNode(pb_node);
     delete pb_node;
     return ret;

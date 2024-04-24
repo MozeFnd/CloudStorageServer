@@ -3,8 +3,7 @@
 #include <filesystem>
 #include <fstream>
 
-Communicator::Communicator(std::shared_ptr<spdlog::logger> logger, std::shared_ptr<KVStore> kvstore) {
-    this->logger = logger;
+Communicator::Communicator(std::shared_ptr<KVStore> kvstore) {
     this->kvstore = kvstore;
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
@@ -45,7 +44,7 @@ void Communicator::handleRequests(int socket_fd) {
     
     int bytesReceived = recv(clientSocket, buffer, 1, 0);
     uint8_t requestType = buffer[0];
-    logger->info("requestType: {}", requestType);
+    LOG_INFO("requestType: " + std::to_string(requestType));
     if (requestType == Login) {
         handleLogin(clientSocket);
     } else if (requestType == AcquireID) {
@@ -59,9 +58,8 @@ void Communicator::handleRequests(int socket_fd) {
     } else if (requestType == GetRemoteTree) {
         handleGetRemoteTree(clientSocket);
     } else {
-        logger->error("unknown request type: {}", requestType);
+        LOG_INFO("ERROR: unknown request type");
     }
-    logger->flush();
     // std::cout << bytesReceived << "bytes received: ";
     // for (int i = 0;i < bytesReceived;i++) {
     //     std::cout << (uint32_t)buffer[i] << " ";
@@ -106,7 +104,7 @@ std::string receiveStringWithLen(int clientSocket) {
 void Communicator::handleLogin(int clientSocket) {
     std::string uname = receiveStringWithLen(clientSocket);
     std::string pwd = receiveStringWithLen(clientSocket);
-    logger->info("client login in: uname:{}   pwd:{}", uname, pwd);
+    // logger->info("client login in: uname:{}   pwd:{}", uname, pwd);
 }
 
 void Communicator::handleAcquireID(int clientSocket) {
@@ -114,31 +112,33 @@ void Communicator::handleAcquireID(int clientSocket) {
     char* buffer = (char*)malloc(buffer_size);
     
     uint32_t nextID = kvstore->fetch_new_id();
-    logger->info("send id {}", nextID);
+    // logger->info("send id {}", nextID);
     *(uint32_t*)buffer = nextID;
     blockWrite(clientSocket, buffer, 4);
     free(buffer);
 }
 
 void Communicator::handleAddNewDirectory(int clientSocket) {
-    int buffer_size = 1000;
+    int buffer_size = 10;
     char* buffer = (char*)malloc(buffer_size);
     blockRead(clientSocket, buffer, 4);
     uint32_t len = *(uint32_t*)buffer;
-    memset(buffer, 0, 4);
-    blockRead(clientSocket, buffer, len);
-    buffer[len] = '\0';
-    std::string jsonStr(buffer);
-    auto js = Json::fromJsonString(jsonStr);
-    auto dev_name = js->getProperty("device");
-    auto id = js->getProperty("id");
-    auto serialized = js->getProperty("serialized");
-    
-    std::string storage_path = "../storage/" + id;
-    std::filesystem::create_directory(storage_path);
+    free(buffer);
+    buffer_size = len;
+    buffer = (char*)malloc(buffer_size);
+    std::cout << "len: " << len << std::endl;
 
-    std::shared_ptr<Node> root = Node::fromSerializedStr(serialized);
+    blockRead(clientSocket, buffer, len);
+
+    std::string serialized(buffer, len);
     
+    std::shared_ptr<Node> root = Node::fromSerializedStr(serialized);
+
+    std::string storage_path = "storage/" + root->id;
+    
+    std::string print = "structure:\n";
+    Node::formatted(root, print, 0);
+    LOG_INFO(print);
     // old version
     // std::function<void(std::shared_ptr<Json>, std::string)> mkdir;
     // mkdir = [&mkdir](std::shared_ptr<Json> cur_js, std::string parentPath){
@@ -155,8 +155,9 @@ void Communicator::handleAddNewDirectory(int clientSocket) {
     std::function<void(std::shared_ptr<Node>, std::string)> mkdir;
     mkdir = [&mkdir](std::shared_ptr<Node> cur_node, std::string parentPath){
         if (DIRECTORY == cur_node->file_type) {
-            auto name = wstr2str(cur_node->name);
+            auto name = cur_node->name;
             auto to_create = parentPath + "/" + name;
+            LOG_INFO(to_create);
             std::filesystem::create_directories(to_create);
             for (auto child : cur_node->children) {
                 mkdir(child, to_create);
@@ -165,9 +166,7 @@ void Communicator::handleAddNewDirectory(int clientSocket) {
     };
 
     mkdir(root, storage_path);
-    // recordDirectoryInfo(id, archJs);
 
-    // logger->info("device {} add new directory to track, id: {}, name: {}", dev_name, id, dir_name);
     free(buffer);
 }
 
@@ -199,15 +198,11 @@ void Communicator::handleSyncFile(int clientSocket){
     std::cout << "filepath:" <<filepath << std::endl;
     std::ofstream file(filepath, std::ios::binary);
     if (!file.is_open()) {
-        logger->error("fail to open/create file {}", filepath);
+        // logger->error("fail to open/create file {}", filepath);
     }
     int cnt = 0;
     while (true) {
         cnt++;
-        if (cnt % 50 == 0) {
-            logger->info("cnt = {}", cnt);
-            logger->flush();
-        }
         blockRead(clientSocket, buffer, 4);
         auto data_size = *(uint32_t*)buffer;
         blockRead(clientSocket, buffer, 1);
@@ -220,8 +215,8 @@ void Communicator::handleSyncFile(int clientSocket){
     }
     file.close();
 
-    logger->info("archive (id={}) updates file {}, cnt = {}", id, relativePath, cnt);
-    logger->flush();
+    // logger->info("archive (id={}) updates file {}, cnt = {}", id, relativePath, cnt);
+    // logger->flush();
 
     free(buffer);
 }
