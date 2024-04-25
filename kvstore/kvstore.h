@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 #include "leveldb/cache.h"
 #include "leveldb/db.h"
 #include "common/util.h"
@@ -12,6 +13,7 @@ class KVStore
 {
 public:
     leveldb::DB* db;
+    std::mutex fetch_id_mut;
     KVStore();
     ~KVStore();
     void store(std::string key, std::string value);
@@ -36,6 +38,7 @@ public:
 
     // 取走一个空闲id
     uint32_t fetch_new_id() {
+        std::unique_lock<std::mutex> tmp_lock(fetch_id_mut);
         auto key = "all_used_id";
         auto all_used_id_str = read(key);
         uint32_t new_id;
@@ -47,6 +50,7 @@ public:
             new_id = cur_max + 1;
         }
         all_used_id_str = all_used_id_str + "," + std::to_string(new_id);
+        store(key, all_used_id_str);
         return new_id;
     }
 

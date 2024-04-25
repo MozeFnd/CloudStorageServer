@@ -44,7 +44,7 @@ void Communicator::handleRequests(int socket_fd) {
     
     int bytesReceived = recv(clientSocket, buffer, 1, 0);
     uint8_t requestType = buffer[0];
-    LOG_INFO("requestType: " + std::to_string(requestType));
+    LOG_INFO("requestType: {}", std::to_string(requestType));
     if (requestType == Login) {
         handleLogin(clientSocket);
     } else if (requestType == AcquireID) {
@@ -58,7 +58,7 @@ void Communicator::handleRequests(int socket_fd) {
     } else if (requestType == GetRemoteTree) {
         handleGetRemoteTree(clientSocket);
     } else {
-        LOG_INFO("ERROR: unknown request type");
+        LOG_INFO("ERROR: unknown request type {}", requestType);
     }
     // std::cout << bytesReceived << "bytes received: ";
     // for (int i = 0;i < bytesReceived;i++) {
@@ -112,7 +112,8 @@ void Communicator::handleAcquireID(int clientSocket) {
     char* buffer = (char*)malloc(buffer_size);
     
     uint32_t nextID = kvstore->fetch_new_id();
-    // logger->info("send id {}", nextID);
+    LOG_INFO("send id {}", nextID);
+
     *(uint32_t*)buffer = nextID;
     blockWrite(clientSocket, buffer, 4);
     free(buffer);
@@ -198,7 +199,7 @@ void Communicator::handleSyncFile(int clientSocket){
     std::cout << "filepath:" <<filepath << std::endl;
     std::ofstream file(filepath, std::ios::binary);
     if (!file.is_open()) {
-        // logger->error("fail to open/create file {}", filepath);
+        LOG_INFO("fail to open/create file {}", filepath);
     }
     int cnt = 0;
     while (true) {
@@ -214,9 +215,6 @@ void Communicator::handleSyncFile(int clientSocket){
         }
     }
     file.close();
-
-    // logger->info("archive (id={}) updates file {}, cnt = {}", id, relativePath, cnt);
-    // logger->flush();
 
     free(buffer);
 }
@@ -263,21 +261,22 @@ std::unordered_map<std::string, std::shared_ptr<Json>> Communicator::readAllDire
     return ret;
 }
 
-void Communicator::loop() {
+void Communicator::loop(std::vector<std::thread>& pool) {
     int clientSocket;
     struct sockaddr_in clientAddr;
     socklen_t clientAddrSize = sizeof(clientAddr);
-    // while (true) {
-    //     clientSocket = accept(serverSocket, (sockaddr*)(&clientAddr), &clientAddrSize);
-    //     if (clientSocket == -1) {
-    //         std::cerr << "Accept failed\n";
-    //         close(serverSocket);
-    //         return;
-    //     }
-    //     std::cout << "connection built, clientSocket: " << clientSocket << std::endl;
-    //     std::thread t = std::thread(&Communicator::handleRequests, this, clientSocket);
-    //     t.detach();
-    // }
+    while (true) {
+        clientSocket = accept(serverSocket, (sockaddr*)(&clientAddr), &clientAddrSize);
+        if (clientSocket == -1) {
+            std::cerr << "Accept failed\n";
+            close(serverSocket);
+        }
+        std::cout << "connection built, clientSocket: " << clientSocket << std::endl;
+        // LOG_INFO("connection built, clientSocket: {}", clientSocket);
+        // std::thread t = std::thread(&Communicator::handleRequests, this, clientSocket);
+        std::unique_lock<std::mutex> lock(pool_mut);
+        pool.emplace_back(std::thread(&Communicator::handleRequests, this, clientSocket));
+    }
 
     clientSocket = accept(serverSocket, (sockaddr*)(&clientAddr), &clientAddrSize);
     std::cout << "connection built, clientSocket: " << clientSocket << std::endl;

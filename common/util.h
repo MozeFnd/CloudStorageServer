@@ -4,6 +4,8 @@
 #include <vector>
 #include <codecvt>
 #include <locale>
+#include <iostream>
+#include <thread>
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
@@ -112,9 +114,18 @@ inline uint64_t max_filetime(FILETIME t1, FILETIME t2) {
     return stamp1;
 }
 
+extern std::shared_ptr<spdlog::logger> logger;
+
+// template <typename... Args>
+// void LOG_INFO(const std::string& text, Args &&...args);
+
 template <typename... Args>
 inline void LOG_INFO(const std::string& text, Args &&...args) {
-    static std::shared_ptr<spdlog::logger> logger = spdlog::basic_logger_mt("file_logger", "logfile.txt");
+    if (logger == nullptr) {
+        logger = spdlog::basic_logger_mt("file_logger", "logfile.txt");
+        std::cout << "logger initialized." << std::endl;
+    }
+    // std::cout << "try to call LOG_INFO, thread id: " << std::this_thread::get_id() << std::endl;
     logger->set_level(spdlog::level::debug);
     logger->info(text, std::forward<Args>(args)...);
     logger->flush();
