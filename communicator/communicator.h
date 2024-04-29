@@ -16,13 +16,16 @@
 
 class Communicator {
 public:
-    enum RequestType {
+    enum RequestType{
+        EXIT = 99,
         Login = 1,
         AcquireID = 2,
         GetAllDir = 3,
         AddDir = 4,
-        SyncFile = 5,
-        GetRemoteTree = 6,
+        UploadFile = 5,
+        DownloadFile = 6,
+        GetRemoteTree = 7,
+        UpdateRemoteTree = 8,
     };
 private:
     int serverSocket;
@@ -43,7 +46,8 @@ public:
     void handleAcquireID(int clientSocket);
     void handleAddNewDirectory(int clientSocket);
     void handleGetAllDir(int clientSocket);
-    void handleSyncFile(int clientSocket);
+    void handleUploadFile(int clientSocket);
+    void handleDownloadFile(int clientSocket);
     void handleGetRemoteTree(int clientSocket);
     void recordDirectoryInfo(std::string id, std::shared_ptr<Json> js);
     std::unordered_map<std::string, std::shared_ptr<Json>> readAllDirectoryInfo();

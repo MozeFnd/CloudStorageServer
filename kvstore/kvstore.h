@@ -9,6 +9,30 @@
 #include "common/util.h"
 #include <string>
 
+typedef std::unique_lock<std::mutex> Guard;
+
+class LockManager{
+public:
+    LockManager(){}
+    ~LockManager(){}
+    std::mutex& get_lock(std::string key) {
+        return locks[key];
+    }
+
+    void lock(std::string key) {
+        Guard tmp_Guard(manager_lock);
+        locks[key].lock();
+    }
+
+    void unlock(std::string key) {
+        Guard tmp_Guard(manager_lock);
+        locks[key].unlock();
+    }
+private:
+    std::mutex manager_lock;
+    std::unordered_map<std::string, std::mutex> locks;
+};
+
 class KVStore
 {
 public:
@@ -56,6 +80,8 @@ public:
 
     // 得到序列化成string的tree结构
     std::string read_tree_serialized(uint32_t id) {
+        auto& tmp_lock = lock_manager.get_lock("tree_serialized");
+        Guard tmp_guard(tmp_lock);
         auto key = "tree_" + std::to_string(id);
         auto val = read(key);
         return val;
@@ -63,11 +89,14 @@ public:
 
     // 将序列化成string的tree结构持久化
     void write_tree_serialiezed(uint32_t id, std::string serialiezed) {
+        auto& tmp_lock = lock_manager.get_lock("tree_serialized");
+        Guard tmp_guard(tmp_lock);
         auto key = "tree_" + std::to_string(id);
         store(key, serialiezed);
     }
 
 private:
+    LockManager lock_manager;
 };
 
 #endif // KVSTORE_H

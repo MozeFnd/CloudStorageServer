@@ -139,7 +139,7 @@ void Json::formattedOutput(std::string jsonStr) {
     }
     int left = 0;
     std::string ret = "";
-    for (int i = 0;i < jsonStr.size();i++) {
+    for (size_t i = 0;i < jsonStr.size();i++) {
         char ch = jsonStr[i];
         if (ch == '{' || ch == '[') {
             left++;
