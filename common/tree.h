@@ -22,12 +22,10 @@ public:
     std::string abs_path;   // 绝对路径
     std::string relative_path;     // 相对路径
     std::string name; // 文件名 或 文件夹名
-    std::string init_str = "using linux";
 #else
     std::wstring abs_path;   // 绝对路径
     std::wstring relative_path;     // 相对路径
     std::wstring name; // 文件名 或 文件夹名
-    std::string init_str = "using windows";
 #endif
 
     std::string md5;   // md5码
@@ -38,7 +36,6 @@ public:
 
 public:
     Node() : children{} {
-        std::cout << init_str << std::endl;
         id = 0;
     }
 
@@ -50,8 +47,11 @@ public:
 
     static std::shared_ptr<Node> fromPbNode(tree::Node* pb_node);
 
-    static std::shared_ptr<Node> fromSerializedStr(const std::string& serialezed);
+    static std::shared_ptr<Node> fromSerializedStr(const std::string& serialized);
 
+    static std::shared_ptr<Node> findChildByRelativePath(std::shared_ptr<Node> cur_node, std::string relative_path);
+
+    static void updateTimestamp(std::shared_ptr<Node> cur_node, std::string relative_path, uint64_t timestamp);
     // static std::shared_ptr<Node> fromPath(std::wstring abs_path, std::wstring relative_path, bool is_root);
     static void formatted(std::shared_ptr<Node> cur_node, std::string& cur_str, uint32_t layer) {
         std::string indent = "";

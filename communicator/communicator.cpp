@@ -184,6 +184,12 @@ void Communicator::handleUploadFile(int clientSocket){
     
     auto id = js->getProperty("id");
     auto relativePath = js->getProperty("relative_path");
+    uint64_t new_timestamp = std::stoull(js->getProperty("timestamp"));
+    std::string serialized = kvstore->read_tree_serialized(std::stoul(id));
+    auto old_tree = Node::fromSerializedStr(serialized);
+    Node::updateTimestamp(old_tree, relativePath, new_timestamp);
+    kvstore->write_tree_serialiezed(std::stoul(id), old_tree->serialize());
+
     auto filepath = "storage/" + id + "/" + relativePath;
     std::cout << "filepath:" <<filepath << std::endl;
     std::ofstream file(filepath, std::ios::binary);
@@ -229,6 +235,8 @@ void Communicator::handleDownloadFile(int clientSocket) {
     if (!file.is_open()) {
         LOG_INFO("fail to open file {}", filepath);
     }
+    LOG_INFO("client is downloading {}", filepath);
+    
     while (!file.eof()) {
         file.read(buffer + 5, max_batch_size);
         int bytesRead = file.gcount();
@@ -241,6 +249,7 @@ void Communicator::handleDownloadFile(int clientSocket) {
         blockWrite(clientSocket, buffer, bytesRead + 5);
         memset(buffer, 0, bytesRead + 5);
     }
+    LOG_INFO("download completes");
 }
 
 void Communicator::handleGetRemoteTree(int clientSocket) {

@@ -56,13 +56,57 @@ std::string Node::serialize() {
     return ret;
 }
 
-std::shared_ptr<Node> Node::fromSerializedStr(const std::string& serialezed) {
+std::shared_ptr<Node> Node::fromSerializedStr(const std::string& serialized) {
     auto pb_node = new tree::Node();
-    pb_node->ParseFromString(serialezed);
+    pb_node->ParseFromString(serialized);
     LOG_INFO("pb_node->name(): "+ pb_node->name());
     auto ret = fromPbNode(pb_node);
     delete pb_node;
     return ret;
+}
+
+std::shared_ptr<Node> Node::findChildByRelativePath(std::shared_ptr<Node> cur_node, std::string relative_path) {
+    auto vec = splitStr(relative_path, '/');
+    if (vec.size() == 0) {
+        std::cerr << "empty relative_path" << std::endl;
+    }
+    std::string name_str = cur_node->name;
+    if (vec[0] != name_str) {
+        std::cerr << "vec[0]: " << vec[0] << "  name: " << name_str << std::endl;
+    }
+    if (vec.size() == 1) {
+        return cur_node;
+    }
+    for (auto child : cur_node->children) {
+        if (child->name == vec[1]) {
+            std::string next = relative_path.substr(vec[0].size() + 1);
+            return findChildByRelativePath(child, next);
+        }
+    }
+    return nullptr;
+}
+
+void Node::updateTimestamp(std::shared_ptr<Node> cur_node, std::string relative_path, uint64_t timestamp) {
+    auto vec = splitStr(relative_path, '/');
+    std::string name_str = cur_node->name;
+    if (vec.size() == 0 || vec[0] != name_str) {
+        std::cerr << "empty relative_path" << std::endl;
+    }
+    
+    if (vec.size() == 1) {
+        cur_node->last_modified = MicrosecondsToFileTime(timestamp);
+        cur_node->max_last_modified = cur_node->last_modified;
+        return;
+    }
+    cur_node->max_last_modified = max_filetime(cur_node->max_last_modified,
+                                               MicrosecondsToFileTime(timestamp));
+    
+    for (auto child : cur_node->children) {
+        if (child->name == vec[1]) {
+            std::string next = relative_path.substr(vec[0].size() + 1);
+            updateTimestamp(child, next, timestamp);
+        }
+    }
 }
 
 // std::shared_ptr<Node> Node::fromPath(std::wstring abs_path, std::wstring relative_path, bool is_root){

@@ -445,3 +445,51 @@
 
 [2024-04-28 20:34:30.478] [file_logger] [info] storage/39/中文
 [2024-04-28 20:34:30.509] [file_logger] [info] requestType: 5
+[2024-04-30 18:46:34.554] [file_logger] [info] requestType: 6
+[2024-04-30 18:55:13.177] [file_logger] [info] requestType: 6
+[2024-04-30 18:55:13.179] [file_logger] [info] client is downloading storage/39/中文/文本.txt
+[2024-04-30 18:55:13.179] [file_logger] [info] download completes
+[2024-04-30 18:57:44.768] [file_logger] [info] requestType: 6
+[2024-04-30 18:57:44.770] [file_logger] [info] client is downloading storage/39/中文/文本.txt
+[2024-04-30 18:57:44.770] [file_logger] [info] download completes
+[2024-04-30 19:02:34.902] [file_logger] [info] requestType: 6
+[2024-04-30 19:02:34.904] [file_logger] [info] client is downloading storage/39/中文/文本.txt
+[2024-04-30 19:02:34.905] [file_logger] [info] download completes
+[2024-04-30 19:13:02.093] [file_logger] [info] requestType: 6
+[2024-04-30 19:13:02.094] [file_logger] [info] client is downloading storage/39/中文/文本.txt
+[2024-04-30 19:13:02.094] [file_logger] [info] download completes
+[2024-04-30 19:16:30.099] [file_logger] [info] requestType: 6
+[2024-04-30 19:16:30.101] [file_logger] [info] client is downloading storage/39/中文/文本.txt
+[2024-04-30 19:16:30.101] [file_logger] [info] download completes
+[2024-04-30 19:17:13.584] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.151] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.151] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.151] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.151] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.151] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.151] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.152] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.152] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.152] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.152] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.152] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.152] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.152] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:15.152] [file_logger] [info] requestType: 0
+[2024-04-30 19:17:15.153] [file_logger] [info] ERROR: unknown request type 0
+[2024-04-30 19:17:36.311] [file_logger] [info] requestType: 6
+[2024-04-30 19:17:36.312] [file_logger] [info] client is downloading storage/39/中文/文本.txt
+[2024-04-30 19:17:36.312] [file_logger] [info] download completes
+[2024-05-01 00:40:33.128] [file_logger] [info] requestType: 6
+[2024-05-01 00:40:33.129] [file_logger] [info] client is downloading storage/39/中文/image.jpg
+[2024-05-01 00:40:38.965] [file_logger] [info] download completes
+[2024-05-01 09:45:57.639] [file_logger] [info] requestType: 6
+[2024-05-01 09:45:57.641] [file_logger] [info] client is downloading storage/39/中文/empty.txt
+[2024-05-01 09:45:57.642] [file_logger] [info] download completes

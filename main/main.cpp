@@ -5,6 +5,7 @@
 #include <cstring>
 #include <memory>
 #include <vector>
+#include <fstream>
 #include <filesystem>
 #include "communicator/communicator.h"
 #include "kvstore/kvstore.h"
@@ -18,53 +19,16 @@ constexpr int BUFFER_SIZE = 1024;
 
 
 int main() {
-
-    // std::cout << "hello world" << std::endl;
-    // std::string str = "C:/Users/10560/Desktop/驾照";
-    // std::wstring wstr = str2wstr(str);
-    // std::string tmp = wstr2str(wstr);
-    // std::cout << tmp << std::endl;
-    // std::cout << "str.size(): " << str.size() << std::endl;
-    // std::cout << "<< sizeof(wchar_t): " << sizeof(wchar_t) << std::endl;
-    // std::locale::global(std::locale("en_US.UTF-8"));
-    // std::wstring wstr = L"驾照/A/B";
-    // for (wchar_t wch : wstr) {
-    //     WCharUnion wu;
-    //     wu.wc = wch;
-    //     std::cout << std::hex << (int)wu.bytes.byte1 << " " << std::hex << (int)wu.bytes.byte2 << " " 
-    //     << std::hex << (int)wu.bytes.byte3 << " "<< std::hex << (int)wu.bytes.byte4 << std::endl;
+    // std::string filepath = "storage/39/中文/empty.txt";
+    // std::ifstream file(filepath, std::ios::binary);
+    // if (!file.is_open()) {
+    //     LOG_INFO("fail to open file {}", filepath);
     // }
-    // std::wcout << wstr << std::endl;
-    // std::filesystem::path p(wstr);
-    // std::filesystem::create_directories(p);
-    // std::string str = "\xE9\xA9\xBE\xE7\x85\xA7";
-    // std::filesystem::create_directories(str+"/A/B");
-    // std::wstring tmp = str2wstr(str);
-    // std::cout << str << std::endl;
-    // std::wcout << tmp << std::endl;
-    // return 0;
-    // std::cout << "str.size(): " << str.size() << std::endl; 
-    // for (auto ch : str) {
-    //     std::cout << std::hex << (int8_t)ch << " ";
-    // }
-    // std::cout << std::endl;
-    // return 0;
-    // std::wstring wstr = str2wstr(str);
-    // std::string new_str = wstr2str(wstr);
-    // std::cout << str << " " << new_str << std::endl;
-    // std::filesystem::create_directories(new_str+"/A/B");
-    // return 0;
-    
-    // auto tmp_fun = [&](int num){
-    //     LOG_INFO("num: {}", num);
-    // };
-    // std::vector<std::thread> pool;
-    // for (size_t i = 0;i < 10;i++) {
-    //     // std::thread t = std::thread(tmp_fun, i);
-    //     pool.emplace_back(std::thread(tmp_fun, i));
-    // }
-    // for (size_t i = 0;i < 10;i++) {
-    //     pool[i].join();
+    // auto buffer = (char*)malloc(100);
+    // while (!file.eof()) {
+    //     file.read(buffer , 10);
+    //     int bytesRead = file.gcount();
+    //     std::cout << "bytesRead: " << bytesRead << std::endl;
     // }
     // return 0;
     

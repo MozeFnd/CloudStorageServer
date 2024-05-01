@@ -105,13 +105,13 @@ inline uint64_t FileTimeToMicroseconds(const FILETIME& filetime) {
     return tmp / 10 - 11644473600000000ULL;  // Convert 100-nanosecond intervals to microseconds and adjust for the Unix epoch
 }
 
-inline uint64_t max_filetime(FILETIME t1, FILETIME t2) {
+inline FILETIME max_filetime(FILETIME t1, FILETIME t2) {
     uint64_t stamp1 = FileTimeToMicroseconds(t1);
     uint64_t stamp2 = FileTimeToMicroseconds(t2);
     if (stamp1 < stamp2) {
-        return stamp2;
+        return t2;
     }
-    return stamp1;
+    return t1;
 }
 
 extern std::shared_ptr<spdlog::logger> logger;
