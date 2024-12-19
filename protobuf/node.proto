@@ -15,4 +15,6 @@ message Node {
 
     uint64 last_modified_tmstmp = 8;
     uint64 max_last_modified_tmstmp = 9;
+
+    string md5 = 10;
 }
